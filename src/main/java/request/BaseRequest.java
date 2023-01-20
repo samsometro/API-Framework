@@ -1,40 +1,50 @@
-package Request;
+package request;
 
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.json.simple.JSONObject;
 
+import java.util.HashMap;
+
 public class BaseRequest {
 
-    public Response post(String path, JSONObject model) {
+    public static Response post(String path, HashMap<String, Object> model) {
         return RestAssured.given()
                 .body(model)
                 .when()
+                .contentType(ContentType.JSON)
+                .log().all()
                 .post(path)
                 .then()
+                .log().all()
+                .statusCode(201)
                 .extract().response();
     }
 
-    public Response put(String path, JSONObject model) {
+    public static Response put(String path, JSONObject model) {
         return RestAssured.given()
-                .body(model)
+                .body(model.toJSONString())
                 .when()
+                .contentType(ContentType.JSON)
                 .put(path)
                 .then()
                 .extract().response();
     }
 
-    public Response get(String path) {
+    public static Response get(String path) {
         return RestAssured.given()
                 .when()
+                .contentType(ContentType.JSON)
                 .get(path)
                 .then()
                 .extract().response();
     }
 
-    public Response delete(String path) {
+    public static Response delete(String path) {
         return RestAssured.given()
                 .when()
+                .contentType(ContentType.JSON)
                 .delete(path)
                 .then()
                 .extract().response();
